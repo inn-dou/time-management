@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>BLOG</title>
+        <link rel="stylesheet" href="/css/style.css">
+        <script src="/send_url.js"></script>
+    </head>
+    <body>
+        <%- include('header'); %>
+        <main>
+            <h1><%= users.name %>さんの出勤履歴</h1>
+            <div class="area">
+                <input type="radio" name="tab_name" id="tab1" checked>
+                <label class="tab_class" for="tab1">タブ1</label>
+                <div class="content_class">
+                    <div class="sal-sum">
+                        <% 
+                        let sum_money = 0;
+                        let sum_time = 0;
+                        let now = new Date();
+                        workHistory.forEach((history) => {
+                            if(new Date(history.In_time).getMonth() === now.getMonth()){
+                                sum_money = sum_money + history.sales;
+                                sum_time = sum_time + history.daytime + history.night;
+                            }
+                        }); %>
+                        <div class="sale">
+                            <p>今月の売り上げ</p>
+                            <h2><%= sum_money %>円</h2>
+                        </div>
+                        <dib class="time">
+                            <p>今月の稼働時間</p>
+                            <h2><%= sum_time %>時間</h2>
+                        </dib>
+                    </div>
+                    <div class="sal-tbl">
+                        <% workHistory.forEach((history) => { %>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>出勤時間</th>
+                                        <th>退勤時間</th>
+                                        <th>昼間勤務</th>
+                                        <th>夜間勤務</th>
+                                        <th>売り上げ</th>
+                                        <% if(locals.manager){ %>
+                                            <th>ボタン</th>
+                                        <% }%>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><%=history.history_id%></td>
+                                        <td><%=history.In_time%></td>
+                                        <td><%=history.Out_time%></td>
+                                        <td><%=history.daytime%></td>
+                                        <td><%=history.night%></td>
+                                        <td><%=history.sales%></td>
+                                        <% if(locals.manager){ %>
+                                            <a href="/work_edit/<%= history.history_id %>" class="sub-button">編集</a>
+                                        <% }%>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        <% }); %>
+                    </div>
+                </div>
+                <input type="radio" name="tab_name" id="tab2" >
+                <label class="tab_class" for="tab2">タブ2</label>
+                <div class="content_class">
+                  <p>従業員名：<%= users.name%></p>
+                  <p>Email：<%= users.email%></p>
+                  <p>時間単価：<%= users.unit_price%></p>
+                  <p>ポイント：<%= users.point%></p>
+                  <P>※1000ポイントにつき時給10円アップ</P>
+                  <% if(locals.manager){ %>
+                    <a href="/user-info-edit/<%= users.id %>" class="sub-button">編集</a>
+                  <% }%>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

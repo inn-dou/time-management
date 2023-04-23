@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>BLOG</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/send_url.js"></script>
+  </head>
+  <body>
+    <%- include('header'); %>
+    <div class="sign">
+      <div class="container">
+        <div class="panel">
+          <h2>従業員登録</h2>
+          <% if (locals.error.length > 0) { %>
+            <ul class="errors">
+              <!-- forEachメソッドを用いて、エラーメッセージ表示 -->
+              <% locals.error.forEach(error => { %>
+                <li><%= error %></li>
+              <% }); %>
+            </ul>
+          <% } %>
+          <form action="/user-info-update/<%=users.id%>" method="post">
+                <p>ユーザー名</p>
+                <input type="text" name="username" value="<%= users.name %>" required>
+                <p>メールアドレス</p>
+                <input type="text" name="email" value="<%= users.email %>" required>
+                <p>時間単価</p>
+                <input type="number" name="unit_price" value="<%= users.unit_price %>" required>
+                <p>ポイント</p>
+                <input type="number" name="point" value="<%= users.point %>" required>
+                <input type="number" name="id" value="<%= users.id %>" required hidden>
+            <input type="submit" value="保存する">
+            <a href="/top-manager">一覧にもどる</a>
+          </form>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

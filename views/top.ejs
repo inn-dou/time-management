@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>BLOG</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/send_url.js"></script>
+  </head>
+  <body>
+    <%- include('header'); %>
+    <div class="section">
+        <div class="max-width">
+            <div class="two-culumns">
+                <script>
+                    setInterval(()=>{
+                        document.querySelector('#now').textContent = new Date().toLocaleString('ja-JP',{ year: "numeric", month: "numeric" , day: "numeric",weekday : "long" });
+                        document.querySelector('#time').textContent = new Date().toLocaleString('ja-JP',{ hour : "numeric" , second : "numeric" , minute : "numeric" });
+                    }, 100);
+                </script>
+                <p id="now"></p>
+                <p id="time"></p>
+                <% if(locals.flag==='1'){ %>
+                    <form action="/Out_time/<%=locals.id%>" method="post">
+                        <input type="radio" name="inOut" value="in" class="push-radio">出勤
+                        <input type="radio" name="inOut" value="out" class="push-radio">退勤
+                        <input type="submit" value="送信">
+                        <p>Out</p>
+                    </form>
+                <% } else { %>
+                    <form action="/In_time/<%=locals.id%>" method="post">
+                        <input type="radio" name="inOut" value="in" class="push-radio">出勤
+                        <input type="radio" name="inOut" value="out" class="push-radio">退勤
+                        <input type="submit" value="送信">
+                        <p>In</p>
+                    </form>
+                <% } %>
+            </div>
+        </div>
+    </div>
+  </body>
+</html>

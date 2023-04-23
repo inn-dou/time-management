@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>BLOG</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/send_url.js"></script>
+  </head>
+  <body>
+    <%- include('header'); %>
+    <div class="sign">
+      <div class="container">
+        <div class="panel">
+          <h2>従業員登録完了</h2>
+          <p>下記の情報を必ず保存してください。</b>ログインに必要になります。</p>
+          <div>
+            <p>ユーザー名</p>
+            <p><%= locals.createUserName %></p>
+            <p>メールアドレス</p>
+            <p><%= locals.createUserEmail %></p>
+            <p>パスワード</p>
+            <p>************</p>
+            <p>※セキュリティの関係上、表示していません。</p>
+            <a href="/user-list" class="sub-button">保存完了</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

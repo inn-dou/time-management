@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>BLOG</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/send_url.js"></script>
+  </head>
+  <body>
+    <%- include('header'); %>
+    <div class="sign">
+      <div class="container">
+        <div class="panel">
+          <h2>勤労編集</h2>
+          <%const timeoptions = {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false,
+            timeZone: 'Asia/Tokyo'
+          }; %>
+          <form action="/work-update/<%=workHistory.history_id%>" method="post">
+                <p>出勤時間</p>
+                <input type="datetime-local" name="inTime" value="<%= new Intl.DateTimeFormat('ja-JP', timeoptions).format(workHistory.In_time).replace(/\//g, '-').replace(',',''); %>" required>
+                <p>退勤時間</p>
+                <input type="datetime-local" name="outTime" value="<%= new Intl.DateTimeFormat('ja-JP', timeoptions).format(workHistory.Out_time).replace(/\//g, '-').replace(',',''); %>" required>
+            <input type="submit" value="保存する">
+            <a href="/user/<%=workHistory.user_id%>">もどる</a>
+          </form>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,19 @@
+<header>
+    <div class="header-nav">
+      <a href="/">Time Management</a>
+      <p>ようこそ、<%= locals.userName %>さん</p>
+      <ul>
+        <% if(locals.isLoggedIn) {%>
+            <li><a href="/logout">ログアウト</a></li>
+            <li><a href="/user/<%=locals.id%>">勤怠履歴</a></li>
+            <% if(locals.manager) {%>
+                <li><a href="/signup">従業員追加</a></li>
+            <% } %>
+        <% }else{%>
+            <li><a href="/login">ログイン</a></li>
+            <li><a href="/signup-manager">管理者ログイン</a></li>
+        <% }%>
+        
+      </ul>
+    </div>
+  </header>
