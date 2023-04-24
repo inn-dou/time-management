@@ -19,10 +19,13 @@ app.use(
 
   const connection = mysql.createConnection({
     host: process.env.DB_HOST,
-    port: process.env.PORT,
-    user: 'root',
+    port: process.env.USERNAME,
+    user: process.env.PORT,
     password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE
+    database: process.env.DB_DATABASE,
+    ssl:{
+        rejectUnauthorized: false
+    }
   });
 
 app.use((req,res,next)=>{
