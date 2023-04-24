@@ -12,7 +12,7 @@ app.use(
       resave: false,
       saveUninitialized: false,
     })
-  )
+  );
 
 const connection = mysql.createConnection({
     host: '127.0.0.1',
@@ -543,4 +543,5 @@ app.post('/signup' ,
 
 );
 
-app.listen(3000);
+app.listen(process.env.PORT || 3000);
+
