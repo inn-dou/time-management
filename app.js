@@ -3,6 +3,11 @@ const mysql = require('mysql');
 const app = express();
 const session = require('express-session');
 const bcrypt = require('bcrypt');
+const path = require('path');
+/// .envから環境変数取り込み
+require('dotenv').config({ 
+    path: path.resolve(__dirname, '../.env') 
+  });
 
 app.use(express.static('public'));
 app.use(express.urlencoded({extended: false}));
@@ -15,11 +20,11 @@ app.use(
   );
 
 const connection = mysql.createConnection({
-    host: '127.0.0.1',
-    port: '3306',
+    host: process.env.DB_HOST,
+    port: process.env.PORT,
     user: 'root',
-    password: '8810=Kanemotsi',
-    database: 'list_app'
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_DATABASE
   });
 
 app.use((req,res,next)=>{
