@@ -24,7 +24,7 @@ ul {
 body {
   min-height: 100vh;
   text-rendering: optimizeSpeed;
-  color: #2B546A;
+  color: #212121;
   line-height: 1.6;
   display: flex;
   flex-direction: column;
@@ -411,7 +411,7 @@ input[type="submit"]:hover {
 }
 
 header {
-  background-color: #88E7CE;
+  background-color: #F4810E;
 }
 
 header.admin {
@@ -458,14 +458,13 @@ header > p:after {
 }
 
 .header-nav > a {
-  color: #2B546A;
+  color: #fff;
   font-weight: bold;
 }
 
 .header-nav p {
-  padding-left: 30px;
   font-size: 15px;
-  color: #2B546A;
+  color: #fff;
   font-weight: bold;
   word-wrap: break-word;
   opacity: 0.7;
@@ -481,9 +480,13 @@ header > p:after {
   white-space: nowrap;
   display: inline-block;
   font-size: 15px;
-  color: #2B546A;
+  color: #fff;
   font-weight: bold;
   padding-left: 30px;
+}
+
+.logo-image{
+  width:200px;
 }
 
 .heading {

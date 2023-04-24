@@ -5,9 +5,7 @@ const session = require('express-session');
 const bcrypt = require('bcrypt');
 const path = require('path');
 /// .envから環境変数取り込み
-require('dotenv').config({ 
-    path: path.resolve(__dirname, '../.env') 
-  });
+require('dotenv').config();
 
 app.use(express.static('public'));
 app.use(express.urlencoded({extended: false}));
@@ -19,7 +17,7 @@ app.use(
     })
   );
 
-const connection = mysql.createConnection({
+  const connection = mysql.createConnection({
     host: process.env.DB_HOST,
     port: process.env.PORT,
     user: 'root',
@@ -437,6 +435,7 @@ app.post('/login' , (req,res)=>{
         'SELECT * FROM users WHERE email=?',
         [email],
         (error,results)=>{
+            console.log(results);
             if(results.length>0){
                 const plain = req.body.password;
                 const hash = results[0].password;
