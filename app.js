@@ -1,4 +1,4 @@
-const express = require('express');
+const express = require('express'); 
 const mysql = require('mysql');
 const app = express();
 const session = require('express-session');
@@ -85,6 +85,7 @@ app.get('/user-list',(req,res)=>{
 
 app.get('/user/:id' , (req,res)=>{
     var id = req.params.id;
+    //contronller.getUser(id);
     connection.query(
         'SELECT * FROM users WHERE id=?',
         [id],
@@ -438,6 +439,7 @@ app.post('/login' , (req,res)=>{
         'SELECT * FROM users WHERE email=?',
         [email],
         (error,results)=>{
+            console.log(error);
             console.log(results);
             if(results.length>0){
                 const plain = req.body.password;
