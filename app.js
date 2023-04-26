@@ -4,8 +4,6 @@ const app = express();
 const session = require('express-session');
 const bcrypt = require('bcrypt');
 const path = require('path');
-//pgパッケージからPoolクラスをインポート
-const { Pool } = require('pg'); 
 // .envから環境変数取り込み
 require('dotenv').config();
 
@@ -19,7 +17,9 @@ app.use(
     })
   );
 
-// Poolクラスを使って接続プールを作成
+//pgパッケージからPoolクラスをインポート
+const { Pool } = require('pg'); 
+// Poolクラスを使って接続を作成
   const connection = new Pool({
     host: process.env.DB_HOST,
     port: process.env.PORT,
@@ -30,6 +30,8 @@ app.use(
         rejectUnauthorized: false
     }
   });
+
+  connection.connect();
 
 app.use((req,res,next)=>{
     if(req.session.userId===undefined){
@@ -446,9 +448,6 @@ app.post('/login' , (req,res)=>{
         (error,results)=>{
             console.log(error);
             console.log(results);
-            if(results===undefined){
-                console.log('undefineですよ')
-            }else{
                 if(results.length>0){
                     const plain = req.body.password;
                     const hash = results[0].password;
@@ -473,7 +472,6 @@ app.post('/login' , (req,res)=>{
                 }else{
                     res.redirect('/login');
                 }
-            }
         }
     );
 });
