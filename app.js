@@ -4,6 +4,8 @@ const app = express();
 const session = require('express-session');
 const bcrypt = require('bcrypt');
 const path = require('path');
+//node.jsから呼び出し
+const sql = require('pg');
 /// .envから環境変数取り込み
 require('dotenv').config();
 
@@ -17,7 +19,7 @@ app.use(
     })
   );
 
-  const connection = mysql.createConnection({
+  const connection = sql.createConnection({
     host: process.env.DB_HOST,
     port: process.env.PORT,
     user: process.env.USERNAME,
