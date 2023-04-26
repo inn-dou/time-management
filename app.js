@@ -18,9 +18,9 @@ app.use(
   );
 
 //pgパッケージからPoolクラスをインポート
-const { Pool } = require('pg'); 
+//const { Pool } = require('pg'); 
 // Poolクラスを使って接続を作成
-const connection = new Pool({
+const connection = mysql.createConnection({
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
     user: process.env.DB_USERNAME,
@@ -31,7 +31,6 @@ const connection = new Pool({
     }
   });
 
-  connection.connect();
 
 app.use((req,res,next)=>{
     if(req.session.userId===undefined){
