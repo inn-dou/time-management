@@ -4,8 +4,8 @@ const app = express();
 const session = require('express-session');
 const bcrypt = require('bcrypt');
 const path = require('path');
-//node.jsから呼び出し
-const sql = require('pg');
+//pgパッケージからPoolクラスをインポート
+const { Pool } = require('pg'); 
 /// .envから環境変数取り込み
 require('dotenv').config();
 
@@ -18,8 +18,9 @@ app.use(
       saveUninitialized: false,
     })
   );
-
-  const connection = sql.createConnection({
+  
+// Poolクラスを使って接続プールを作成
+  const connection = new Pool({
     host: process.env.DB_HOST,
     port: process.env.PORT,
     user: process.env.USERNAME,
