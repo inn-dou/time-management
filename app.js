@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt');
 const path = require('path');
 //pgパッケージからPoolクラスをインポート
 const { Pool } = require('pg'); 
-/// .envから環境変数取り込み
+// .envから環境変数取り込み
 require('dotenv').config();
 
 app.use(express.static('public'));
@@ -18,7 +18,7 @@ app.use(
       saveUninitialized: false,
     })
   );
-  
+
 // Poolクラスを使って接続プールを作成
   const connection = new Pool({
     host: process.env.DB_HOST,
@@ -467,6 +467,10 @@ app.post('/login' , (req,res)=>{
                 });
             }else{
                 res.redirect('/login');
+            }
+            if (error) {
+                // エラーがある場合の処理
+                console.error('クエリ実行エラー:', error);
             }
         }
     );
