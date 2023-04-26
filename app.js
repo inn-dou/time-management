@@ -26,9 +26,10 @@ app.use(
     user: process.env.USERNAME,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_DATABASE,
-    ssl:{
-        rejectUnauthorized: false
-    }
+    ssl:true
+    //{
+    //    rejectUnauthorized: false
+    //}
   });
 
 app.use((req,res,next)=>{
@@ -436,6 +437,8 @@ app.get('/login' , (req,res)=>{
     res.render('login.ejs');
 });
 
+
+//ログイン処理
 app.post('/login' , (req,res)=>{
     const email = req.body.email;
     connection.query(
@@ -467,10 +470,6 @@ app.post('/login' , (req,res)=>{
                 });
             }else{
                 res.redirect('/login');
-            }
-            if (error) {
-                // エラーがある場合の処理
-                console.error('クエリ実行エラー:', error);
             }
         }
     );
