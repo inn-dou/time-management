@@ -26,10 +26,9 @@ app.use(
     user: process.env.USERNAME,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_DATABASE,
-    ssl:true
-    //{
-    //    rejectUnauthorized: false
-    //}
+    ssl:{
+        rejectUnauthorized: false
+    }
   });
 
 app.use((req,res,next)=>{
@@ -447,29 +446,33 @@ app.post('/login' , (req,res)=>{
         (error,results)=>{
             console.log(error);
             console.log(results);
-            if(results.length>0){
-                const plain = req.body.password;
-                const hash = results[0].password;
-                bcrypt.compare(plain,hash,(error,isEqual)=>{
-                    if(isEqual){
-                        console.log(results[0].id);
-                        console.log(results[0].name);
-                        req.session.userId = results[0].id;
-                        req.session.userName = results[0].name;
-                        req.session.manager = results[0].manager;
-                        req.session.flag = results[0].work_flag;
-                        //Separete redirect depend on manager
-                        if(results[0].manager){
-                            res.redirect('/top-manager');
-                        }else{
-                            res.redirect('/top');
-                        }
-                    }else{
-                        res.redirect('/login');
-                    }
-                });
+            if(results===undefined){
+                console.log('undefineですよ')
             }else{
-                res.redirect('/login');
+                if(results.length>0){
+                    const plain = req.body.password;
+                    const hash = results[0].password;
+                    bcrypt.compare(plain,hash,(error,isEqual)=>{
+                        if(isEqual){
+                            console.log(results[0].id);
+                            console.log(results[0].name);
+                            req.session.userId = results[0].id;
+                            req.session.userName = results[0].name;
+                            req.session.manager = results[0].manager;
+                            req.session.flag = results[0].work_flag;
+                            //Separete redirect depend on manager
+                            if(results[0].manager){
+                                res.redirect('/top-manager');
+                            }else{
+                                res.redirect('/top');
+                            }
+                        }else{
+                            res.redirect('/login');
+                        }
+                    });
+                }else{
+                    res.redirect('/login');
+                }
             }
         }
     );
