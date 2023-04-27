@@ -17,9 +17,7 @@ app.use(
     })
   );
 
-//pgパッケージからPoolクラスをインポート
-//const { Pool } = require('pg'); 
-// Poolクラスを使って接続を作成
+//envファイルよるデータベースの接続
 const connection = mysql.createConnection({
     host: process.env.DB_HOSTNAME,
     port: process.env.DB_PORT,
@@ -45,7 +43,8 @@ app.use((req,res,next)=>{
         res.locals.isLoggedIn = true;
         res.locals.manager = req.session.manager;
         res.locals.id = req.session.userId;
-        res.locals.flag = req.session.flag
+        res.locals.flag = req.session.flag;
+        res.locals.point = req.session.point;
     }
     if(req.session.errors===undefined){
         res.locals.error = '';
@@ -69,15 +68,6 @@ app.get('/top',(req,res)=>{
     res.render('top.ejs');
 });
 
-app.get('/list', (req, res) => {
-    connection.query(
-        'SELECT * FROM articles',
-        (error, results) => {
-        res.render('list.ejs', { articles: results });
-        }
-    );
-});
-
 app.get('/user-list',(req,res)=>{
     connection.query(
         'SELECT * FROM users',
@@ -87,6 +77,7 @@ app.get('/user-list',(req,res)=>{
     );
 });
 
+//ユーザー詳細画面
 app.get('/user/:id' , (req,res)=>{
     var id = req.params.id;
     //contronller.getUser(id);
@@ -107,6 +98,7 @@ app.get('/user/:id' , (req,res)=>{
     );
 });
 
+//ユーザー情報編集画面
 app.get('/user-info-edit/:id' , (req,res)=>{
     connection.query(
         'SELECT * FROM users WHERE id=?',
@@ -118,6 +110,7 @@ app.get('/user-info-edit/:id' , (req,res)=>{
     );
 });
 
+//ユーザー情報更新画面
 app.post('/user-info-update/:id',(req,res)=>{
     connection.query(
         'UPDATE users SET name=?, email=?, unit_price=?, point=? WHERE id=?',
@@ -130,6 +123,7 @@ app.post('/user-info-update/:id',(req,res)=>{
     );
 });
 
+//勤怠履歴編集画面
 app.get('/work_edit/:id',(req,res)=>{
     connection.query(
         'SELECT * FROM work_history WHERE history_id=?',
@@ -141,6 +135,7 @@ app.get('/work_edit/:id',(req,res)=>{
     );
 });
 
+//編集履歴更新画面
 app.post('/work-update/:history_id',(req,res)=>{
     connection.query(
         'UPDATE work_history SET In_time=?, Out_time=? WHERE history_id=?',
@@ -277,6 +272,7 @@ app.post('/work-update/:history_id',(req,res)=>{
     );
 });
 
+//出勤ポスト
 app.post('/In_time/:id',(req,res)=>{
     let In_time = new Date().toLocaleString();
     connection.query(
@@ -297,6 +293,7 @@ app.post('/In_time/:id',(req,res)=>{
     );
 });
 
+//退勤ポスト
 app.post('/Out_time/:id',(req,res)=>{
     let Out_time = new Date().toLocaleString();
     connection.query(
@@ -458,6 +455,7 @@ app.post('/login' , (req,res)=>{
                             req.session.userName = results[0].name;
                             req.session.manager = results[0].manager;
                             req.session.flag = results[0].work_flag;
+                            req.session.point = results[0].point;
                             //Separete redirect depend on manager
                             if(results[0].manager){
                                 res.redirect('/top-manager');
@@ -489,12 +487,14 @@ app.get('/signup' , (req,res)=>{
     res.render('signup.ejs', {errors:[]});
 });
 
+//従業員登録確認画面
 app.get('/signup-confirm' , (req,res)=>{
     res.locals.createUserName=req.session.createUserName;
     res.locals.createUserEmail=req.session.createUserEmail;
     res.render('signup-confirm.ejs');
 });
 
+//従業員新規登録
 app.post('/signup' , 
     (req,res,next)=>{
         const username = req.body.username;
@@ -539,10 +539,11 @@ app.post('/signup' ,
         const username = req.body.username;
         const email = req.body.email;
         const password = req.body.password;
+        const unit_price = req.body.unit_price;
         bcrypt.hash(password,10,(error,hash)=>{
             connection.query(
-                'INSERT INTO users (name, email, password) VALUES(?,?,?)',
-                [username,email,hash],
+                'INSERT INTO users (name, email, password, unit_price) VALUES(?,?,?,?)',
+                [username,email,hash,unit_price],
                 (error,results)=>{
                     req.session.createUserName = username;
                     req.session.createUserEmail = email;

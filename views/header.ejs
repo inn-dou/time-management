@@ -4,6 +4,7 @@
       <p>ようこそ、<%= locals.userName %>さん</p>
       <ul>
         <% if(locals.isLoggedIn) {%>
+            <li><p>現在<%= locals.point %>ポイント</p></li>
             <li><a href="/logout">ログアウト</a></li>
             <li><a href="/user/<%=locals.id%>">勤怠履歴</a></li>
             <% if(locals.manager) {%>

@@ -8,30 +8,34 @@
   </head>
   <body>
     <%- include('header'); %>
-    <div class="section">
+    <div class="top-section">
         <div class="max-width">
-            <div class="two-culumns">
+            <div class="two-culumns vertical">
                 <script>
                     setInterval(()=>{
                         document.querySelector('#now').textContent = new Date().toLocaleString('ja-JP',{ year: "numeric", month: "numeric" , day: "numeric",weekday : "long" });
                         document.querySelector('#time').textContent = new Date().toLocaleString('ja-JP',{ hour : "numeric" , second : "numeric" , minute : "numeric" });
                     }, 100);
                 </script>
-                <p id="now"></p>
-                <p id="time"></p>
+                <div class="time-wrap">
+                    <p id="now" class="now-date"></p>
+                    <p id="time" class="now-time"></p>
+                </div>
                 <% if(locals.flag==='1'){ %>
-                    <form action="/Out_time/<%=locals.id%>" method="post">
-                        <input type="radio" name="inOut" value="in" class="push-radio">出勤
-                        <input type="radio" name="inOut" value="out" class="push-radio">退勤
-                        <input type="submit" value="送信">
-                        <p>Out</p>
+                    <form action="/Out_time/<%=locals.id%>" method="post" class="inout-btn-wrap">
+                        <div class="radio-wrapper">
+                            <input type="radio" name="inOut" value="in" class="push-radio" id="in" disabled><label for="in" class="label">出勤</label>
+                            <input type="radio" name="inOut" value="out" class="push-radio" id="out" checked><label for="out" class="label">退勤</label>
+                        </div>
+                        <input type="submit" value="退勤する">
                     </form>
                 <% } else { %>
-                    <form action="/In_time/<%=locals.id%>" method="post">
-                        <input type="radio" name="inOut" value="in" class="push-radio">出勤
-                        <input type="radio" name="inOut" value="out" class="push-radio">退勤
-                        <input type="submit" value="送信">
-                        <p>In</p>
+                    <form action="/In_time/<%=locals.id%>" method="post" class="inout-btn-wrap">
+                        <div class="radio-wrapper">
+                            <input type="radio" name="inOut" value="in" class="push-radio" id="in" checked><label for="in" class="label">出勤</label>
+                            <input type="radio" name="inOut" value="out" class="push-radio" id="out" disabled><label for="out" class="label">退勤</label>
+                        </div>
+                        <input type="submit" value="出勤する">
                     </form>
                 <% } %>
             </div>

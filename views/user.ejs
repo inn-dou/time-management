@@ -9,10 +9,12 @@
     <body>
         <%- include('header'); %>
         <main>
-            <h1><%= users.name %>さんの出勤履歴</h1>
+            <div class="top-wrap">
+                <h1><%= users.name %>さんの出勤履歴</h1>
+            </div>
             <div class="area">
                 <input type="radio" name="tab_name" id="tab1" checked>
-                <label class="tab_class" for="tab1">タブ1</label>
+                <label class="tab_class" for="tab1">出勤情報</label>
                 <div class="content_class">
                     <div class="sal-sum">
                         <% 
@@ -53,13 +55,22 @@
                                 <tbody>
                                     <tr>
                                         <td><%=history.history_id%></td>
-                                        <td><%=history.In_time%></td>
-                                        <td><%=history.Out_time%></td>
+                                        <%const timeoptions = {
+                                            year: 'numeric',
+                                            month: '2-digit',
+                                            day: '2-digit',
+                                            hour: '2-digit',
+                                            minute: '2-digit',
+                                            hour12: false,
+                                            timeZone: 'Asia/Tokyo'
+                                          }; %>
+                                        <td><%= new Intl.DateTimeFormat('ja-JP', timeoptions).format(history.In_time).replace(/\//g, '-').replace(',',''); %></td>
+                                        <td><%= new Intl.DateTimeFormat('ja-JP', timeoptions).format(history.Out_time).replace(/\//g, '-').replace(',',''); %></td>
                                         <td><%=history.daytime%></td>
                                         <td><%=history.night%></td>
                                         <td><%=history.sales%></td>
                                         <% if(locals.manager){ %>
-                                            <a href="/work_edit/<%= history.history_id %>" class="sub-button">編集</a>
+                                            <td class="a-center"> <a href="/work_edit/<%= history.history_id %>" class="detail-btn">編集</a></td>
                                         <% }%>
                                     </tr>
                                 </tbody>
@@ -68,7 +79,7 @@
                     </div>
                 </div>
                 <input type="radio" name="tab_name" id="tab2" >
-                <label class="tab_class" for="tab2">タブ2</label>
+                <label class="tab_class" for="tab2">詳細情報</label>
                 <div class="content_class">
                   <p>従業員名：<%= users.name%></p>
                   <p>Email：<%= users.email%></p>

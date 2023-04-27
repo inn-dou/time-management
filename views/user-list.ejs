@@ -10,7 +10,7 @@
     <%- include('header'); %>
     <main>
       <ul class="list">
-        <% users.forEach((user) => { %>
+        
             <table>
                 <thead>
                     <tr>
@@ -21,15 +21,17 @@
                     </tr>
                 </thead>
                 <tbody>
+                  <% users.forEach((user) => { %>
                     <tr>
-                        <td><%=user.id%></td>
+                        <td class="tbl-id"><%=user.id%></td>
                         <td><%=user.name%></td>
                         <td><%=user.email%></td>
-                        <td><a href="/user/<%= user.id %>">詳細</a></td>
+                        <td class="a-center"><a href="/user/<%= user.id %>"  class="detail-btn">詳細</a></td>
                     </tr>
+                  <% }); %>
                 </tbody>
             </table>
-        <% }); %>
+        
       </ul>
     </main>
   </body>
