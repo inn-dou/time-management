@@ -37,7 +37,7 @@
                         </dib>
                     </div>
                     <div class="sal-tbl">
-                        <% workHistory.forEach((history) => { %>
+                        
                             <table>
                                 <thead>
                                     <tr>
@@ -53,6 +53,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    <% workHistory.forEach((history) => { %>
                                     <tr>
                                         <td><%=history.history_id%></td>
                                         <%const timeoptions = {
@@ -64,8 +65,18 @@
                                             hour12: false,
                                             timeZone: 'Asia/Tokyo'
                                           }; %>
-                                        <td><%= new Intl.DateTimeFormat('ja-JP', timeoptions).format(history.In_time).replace(/\//g, '-').replace(',',''); %></td>
-                                        <td><%= new Intl.DateTimeFormat('ja-JP', timeoptions).format(history.Out_time).replace(/\//g, '-').replace(',',''); %></td>
+                                        <!-- In＿timeが格納されているか -->
+                                        <% if(history.In_time !== null){ %>
+                                            <td><%= new Intl.DateTimeFormat('ja-JP', timeoptions).format(new Date(history.In_time)).replace(/\//g, '-').replace(',',''); %></td>
+                                        <% } else { %>
+                                            <td></td>
+                                        <% } %>
+                                        <!-- Out＿timeが格納されているか -->
+                                        <% if(history.Out_time !== null){ %>
+                                            <td><%= new Intl.DateTimeFormat('ja-JP', timeoptions).format(new Date(history.Out_time)).replace(/\//g, '-').replace(',',''); %></td>
+                                        <% } else { %>
+                                            <td></td>
+                                        <% } %>
                                         <td><%=history.daytime%></td>
                                         <td><%=history.night%></td>
                                         <td><%=history.sales%></td>
@@ -73,9 +84,10 @@
                                             <td class="a-center"> <a href="/work_edit/<%= history.history_id %>" class="detail-btn">編集</a></td>
                                         <% }%>
                                     </tr>
+                                    <% }); %>
                                 </tbody>
                             </table>
-                        <% }); %>
+                        
                     </div>
                 </div>
                 <input type="radio" name="tab_name" id="tab2" >

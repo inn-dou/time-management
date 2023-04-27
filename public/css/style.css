@@ -458,8 +458,20 @@ header > p:after {
   padding-left: 30px;
 }
 
+.notes{
+  margin-top: 10px;
+  padding: 20px;
+  width: 100%;
+  background-color: #ebeaea;
+  border-color: #dadada;
+}
+
+.notes-txt{
+  font-size: 12px;
+}
+
 .logo-image{
-  width:200px;
+  width: 200px;
 }
 
 .heading {
