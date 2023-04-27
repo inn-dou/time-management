@@ -21,7 +21,7 @@ app.use(
 //const { Pool } = require('pg'); 
 // Poolクラスを使って接続を作成
 const connection = mysql.createConnection({
-    host: process.env.DB_HOST,
+    host: process.env.DB_HOSTNAME,
     port: process.env.DB_PORT,
     user: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
