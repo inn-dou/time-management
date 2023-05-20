@@ -274,7 +274,7 @@ app.post('/work-update/:history_id',(req,res)=>{
 
 //出勤ポスト
 app.post('/In_time/:id',(req,res)=>{
-    let In_time = new Date().toLocaleString();
+    let In_time = new Date().toLocaleString(ja-jp);
     connection.query(
         'INSERT into work_history (user_id,In_time) VALUES(?,?)',
         [req.params.id,In_time],
