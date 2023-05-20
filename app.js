@@ -275,6 +275,7 @@ app.post('/work-update/:history_id',(req,res)=>{
 //出勤ポスト
 app.post('/In_time/:id',(req,res)=>{
     let In_time = new Date().toLocaleString(ja-jp);
+    console.log(In_time);
     connection.query(
         'INSERT into work_history (user_id,In_time) VALUES(?,?)',
         [req.params.id,In_time],
@@ -295,7 +296,7 @@ app.post('/In_time/:id',(req,res)=>{
 
 //退勤ポスト
 app.post('/Out_time/:id',(req,res)=>{
-    let Out_time = new Date().toLocaleString();
+    let Out_time = new Date().toLocaleString(ja-jp);
     connection.query(
         'UPDATE work_history SET Out_time=? WHERE user_id=? ORDER BY history_id DESC LIMIT 1',
         [Out_time,req.params.id],
