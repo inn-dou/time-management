@@ -67,13 +67,15 @@
                                           }; %>
                                         <!-- In＿timeが格納されているか -->
                                         <% if(history.In_time !== null && !isNaN(new Date(history.In_time))){ %>
-                                            <td><%= new Intl.DateTimeFormat('ja-JP', timeoptions).format(new Date(history.In_time)).replace(/\//g, '-').replace(',',''); %></td>
+                                            <!-- <td><%= new Intl.DateTimeFormat('ja-JP', timeoptions).format(new Date(history.In_time)).replace(/\//g, '-').replace(',',''); %></td> -->
+                                            <td><%= history.In_time %></td>
                                         <% } else { %>
                                             <td></td>
                                         <% } %>
                                         <!-- Out＿timeが格納されているか -->
                                         <% if(history.Out_time !== null && !isNaN(new Date(history.Out_time))){ %>
-                                            <td><%= new Intl.DateTimeFormat('ja-JP', timeoptions).format(new Date(history.Out_time)).replace(/\//g, '-').replace(',',''); %></td>
+                                            <!-- <td><%= new Intl.DateTimeFormat('ja-JP', timeoptions).format(new Date(history.Out_time)).replace(/\//g, '-').replace(',',''); %></td> -->
+                                            <td><%= history.Out_time %></td>
                                         <% } else { %>
                                             <td></td>
                                         <% } %>
