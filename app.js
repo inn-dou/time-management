@@ -274,7 +274,8 @@ app.post('/work-update/:history_id',(req,res)=>{
 
 //出勤ポスト
 app.post('/In_time/:id',(req,res)=>{
-    let In_time = new Date().toLocaleString(ja-jp);
+    //toLocaleString()を使用する代わりに、MySQLが受け入れる形式で日付と時刻をフォーマットする必要があるため　let In_time = new Date().toLocaleString();
+    let In_time = new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' });
     console.log(In_time);
     connection.query(
         'INSERT into work_history (user_id,In_time) VALUES(?,?)',
@@ -296,7 +297,8 @@ app.post('/In_time/:id',(req,res)=>{
 
 //退勤ポスト
 app.post('/Out_time/:id',(req,res)=>{
-    let Out_time = new Date().toLocaleString(ja-jp);
+    //let Out_time = new Date().toLocaleString();
+    let Out_time = new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' });
     connection.query(
         'UPDATE work_history SET Out_time=? WHERE user_id=? ORDER BY history_id DESC LIMIT 1',
         [Out_time,req.params.id],
@@ -307,6 +309,7 @@ app.post('/Out_time/:id',(req,res)=>{
                 (error,results)=>{
                     const inTime = results[0].In_time;
                     const outTime = results[0].Out_time;
+                    console.log(inTime.getHours);
                     function calculateNighttimeHours(inTime, outTime) {
                         const nighttimeStartHour = 22;
                         const nighttimeEndHour = 5;
