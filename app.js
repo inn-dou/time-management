@@ -275,7 +275,8 @@ app.post('/work-update/:history_id',(req,res)=>{
 //出勤ポスト
 app.post('/In_time/:id',(req,res)=>{
     //toLocaleString()を使用する代わりに、MySQLが受け入れる形式で日付と時刻をフォーマットする必要があるため　let In_time = new Date().toLocaleString();
-    let In_time = new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' });
+    let currentDate = new Date();
+    let In_time = currentDate.toISOString().slice(0, 19).replace('T', ' ');
     console.log(In_time);
     connection.query(
         'INSERT into work_history (user_id,In_time) VALUES(?,?)',
@@ -298,7 +299,8 @@ app.post('/In_time/:id',(req,res)=>{
 //退勤ポスト
 app.post('/Out_time/:id',(req,res)=>{
     //let Out_time = new Date().toLocaleString();
-    let Out_time = new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' });
+    let currentDate = new Date();
+    let Out_time = currentDate.toISOString().slice(0, 19).replace('T', ' ');
     connection.query(
         'UPDATE work_history SET Out_time=? WHERE user_id=? ORDER BY history_id DESC LIMIT 1',
         [Out_time,req.params.id],
