@@ -7,16 +7,6 @@ const path = require('path');
 // .envから環境変数取り込み
 require('dotenv').config();
 
-app.use(express.static('public'));
-app.use(express.urlencoded({extended: false}));
-app.use(
-    session({
-      secret: 'bnaafgnib42',
-      resave: false,
-      saveUninitialized: false,
-    })
-  );
-
 //envファイルよるデータベースの接続
 const connection = mysql.createConnection({
     host: process.env.DB_HOSTNAME,
@@ -28,6 +18,46 @@ const connection = mysql.createConnection({
         rejectUnauthorized: false
     }
   });
+
+  
+//connection test
+  function handleDisconnect() {
+      console.log('INFO.CONNECTION_DB: ');
+      
+      //connection取得
+      connection.connect(function(err) {
+          if (err) {
+              console.log('ERROR.CONNECTION_DB: ', err);
+              setTimeout(handleDisconnect, 1000);
+          }
+      });
+      
+      //error('PROTOCOL_CONNECTION_LOST')時に再接続
+      connection.on('error', function(err) {
+          console.log('ERROR.DB: ', err);
+          if (err.code === 'PROTOCOL_CONNECTION_LOST') {
+              console.log('ERROR.CONNECTION_LOST: ', err);
+              handleDisconnect();
+          } else {
+              throw err;
+          }
+      });
+  }
+  
+  handleDisconnect();
+  //connection test
+
+
+app.use(express.static('public'));
+app.use(express.urlencoded({extended: false}));
+app.use(
+    session({
+      secret: 'bnaafgnib42',
+      resave: false,
+      saveUninitialized: false,
+    })
+  );
+
 
 
 app.use((req,res,next)=>{
