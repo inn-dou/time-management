@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>ポイントUP勤怠</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <style>
+        .material-symbols-outlined {
+          font-variation-settings:
+          'FILL' 0,
+          'wght' 400,
+          'GRAD' 0,
+          'opsz' 48
+        }
+    </style>
+
+    <link href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.css' rel='stylesheet' />
+    <link href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.print.min.css' rel='stylesheet' media='print' />
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.js"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/locale/ja.js'></script> 
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js'></script>
+
+    <style type="text/css">
+        /* 日曜日 */
+        .fc-sun {
+            color: red;
+            background-color: #fff0f0;
+        }
+        
+        /* 土曜日 */
+        .fc-sat {
+            color: blue;
+            background-color: #f0f0ff;
+        }
+    </style>
+    <title>カレンダー</title>
+</head>
+
+<body>
+    <div class="container" style="padding: 1.25rem;">
+        <div class="card">
+            <h5 class="card-header">カレンダー</h5>
+            <div class="card-body">
+                <div id="calendar">
+                </div>
+                <!--イベント追加ポップアップ-->
+                <div class="modal" id="modal-template">
+                    <div class="modal__title">
+                      <label>タイトル： <input type="text" id="title"></label>
+                    </div>
+                    <div class="modal__color">
+                      <label>背景色： <input type="color" id="color"></label>
+                    </div>
+                    <div class="modal__times">
+                      <label>開始： <input type="date" id="start"></label>
+                      <label>終了： <input type="date" id="end"></label>
+                    </div>
+                        
+                    <div class="modal-action-buttons">
+                      <button class="modal-action-buttons__button save" id="save">保存</button>
+                      <button class="modal-action-buttons__button delete" id="delete">削除</button>
+                      <button class="modal-action-buttons close material-symbols-outlined" id="cancel">cancel</button>
+                    </div>
+                  </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    let calendar;
+    document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            headerToolbar: {
+                left: 'prev,next',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'// user can switch between the two
+            },
+            dayMaxEventRows: true, // for all non-TimeGrid views
+            views: {
+                timeGrid: {
+                dayMaxEventRows: 6 // adjust to 6 only for timeGridWeek/timeGridDay
+                }
+            },
+            selectable: true,
+            //placeholder:true,
+            locale: "ja",
+            timeZone: 'local', 
+            eventDisplay: 'block',
+            displayEventTime: false,
+            select: arg => {
+                initEditModal( arg );
+            },
+            eventClick: arg => {
+                console.log( arg );
+                initEditModal( arg );
+            },
+        });
+    
+        calendar.render();
+    });
+
+    const initEditModal = data  => {
+        removeAlreadyModal();
+        const defModal = document.getElementById( 'modal-template' );
+        const modal = defModal.cloneNode( true );
+        modal.id = 'modal';
+
+        setupModalPosition( modal, data.jsEvent );
+        document.body.appendChild( modal );
+        if ( data.event === undefined ) {
+            document.querySelector( '#modal .delete' ).remove();
+        }
+  
+        setupModalData( modal, data );
+
+        registerEditModalEvent( modal, data );
+    };
+
+    const setupModalPosition = ( modal, e ) => {
+        modal.style.display = 'flex';
+        modal.style.position = 'absolute';
+        modal.style.zIndex = 9000;
+
+        const position = calcModalPosition( e );
+        modal.style.left = `${position.x}px`;
+        modal.style.top = `${position.y}px`;
+    };
+
+    const calcModalPosition = e => {
+        const windowWidth = window.outerWidth;
+
+        const y = e.pageY + 16;
+        let x = e.pageX;
+
+        if ( e.pageX <= 125 ) {
+            x = e.pageX;
+        } else if (  e.pageX > 125 && windowWidth - e.pageX > 125 ) {
+            x = e.pageX - 125;
+        } else if ( windowWidth - e.pageX <= 125 ) {
+            x = e.pageX - 250;
+        }
+
+        return {
+            x: x,
+            y: y
+        };
+    };
+
+    const removeAlreadyModal = () => {
+        const modal = document.getElementById( 'modal' );
+        if ( modal ) {
+            modal.remove();
+        }
+    };
+
+    // モーダル登録処理
+    const registerEditModalEvent = ( modal, arg ) => {
+        const end = modal.querySelector( '#end' );
+        const title = modal.querySelector( '#title' );
+        const color = modal.querySelector( '#color' );
+        const start = modal.querySelector( '#start' );
+        
+        // 保存
+        const saveButton = modal.querySelector( '#save' );
+        if ( saveButton ) {
+            saveButton.addEventListener( 'click', e => {
+                e.preventDefault();
+      
+      
+                if ( arg.event !== undefined ) {
+                    // 変更時
+                    const endStrings = end.value && start.value !== end.value ? end.value.split( '-' ) : start.value.split( '-' );
+                    const endDate = new Date( endStrings[0], parseInt( endStrings[1] ) - 1, endStrings[2], 23, 59, 59 );
+
+                    arg.event.setStart( start.value );
+                    arg.event.setEnd( endDate );
+                    arg.event.setProp( 'title', title.value );
+                    arg.event.setProp( 'backgroundColor', color.value );
+                } else {
+                    // 新規作成時
+                    const endStrings = end.value && start.value !== end.value ? end.value.split( '-' ) : start.value.split( '-' );
+                    const endDate = `${endStrings[0]}/${endStrings[1]}/${endStrings[2]}`;
+                    //new Date( endStrings[0], parseInt( endStrings[1] ) - 1, endStrings[2], 23, 59, 59 );  
+                    console.log('start'+start.value+'end'+endDate+'title'+title.value+'backgroundColor'+color.value);
+                    calendar.addEvent({
+                        start: start.value,
+                        end: endDate,
+                        title: title.value,
+                        backgroundColor: color.value,
+                        allDay:true
+                    });
+                }
+
+                calendar.unselect();
+                modal.remove();
+            } );
+        }
+
+        // キャンセル
+        const cancelButton = modal.querySelector('#cancel');
+        cancelButton.addEventListener('click', e => {
+            e.preventDefault();
+
+            if (calendar) {
+            calendar.unselect();
+            }
+            modal.remove();
+        });
+
+        // 削除
+        const deleteButton = modal.querySelector( '#delete' );
+        if ( deleteButton ) {
+
+            deleteButton.addEventListener( 'click', e => {
+                e.preventDefault();
+                arg.event.remove();
+                calendar.unselect();
+                modal.remove();
+            } );
+        }
+    };
+
+    // モダールに既存イベントを設定
+    const setupModalData = ( modal, data ) => {
+        const start = modal.querySelector( '#start' );
+        const end = modal.querySelector( '#end' );
+        const title = modal.querySelector( '#title' );
+        const color = modal.querySelector( '#color' );
+  
+        console.log( data );
+        if ( data.event !== undefined ) {
+            start.value = /T/.test( data.event.startStr ) ? data.event.startStr.split( 'T' )[0] : data.event.startStr;
+            end.value = /T/.test( data.event.endStr ) ? data.event.endStr.split( 'T' )[0] : data.event.endStr;
+            title.value = data.event.title;
+            color.value = data.event.backgroundColor;
+        } else {
+            start.value = data.startStr;
+    
+            const diffTime = Math.abs( data.end - data.start );
+            const diffDays = Math.ceil( diffTime / ( 1000 * 60 * 60 * 24 ) );
+            if ( 1 < diffDays ) {
+    
+                const endDate = data.end;
+                endDate.setDate( endDate.getDate() - 1 );
+                end.value = formatDate( endDate );
+            }
+        }
+    
+    };
+
+    // DateObject to YYYY-MM-DD
+    function formatDate(date) {
+        var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+        if (month.length < 2) 
+            month = '0' + month;
+        if (day.length < 2) 
+            day = '0' + day;
+
+        return [year, month, day].join('-');
+    }
+</script>
+</html>
