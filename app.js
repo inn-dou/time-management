@@ -2,6 +2,7 @@ const express = require('express');
 const mysql = require('mysql');
 const app = express();
 const session = require('express-session');
+const MySQLStore = require('express-mysql-session')(session); //追加分
 const bcrypt = require('bcrypt');
 const path = require('path');
 // .envから環境変数取り込み
