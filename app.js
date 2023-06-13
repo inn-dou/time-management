@@ -28,6 +28,7 @@ require('dotenv').config();
     user: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
+    acquireTimeout: 30000,
     ssl: {
       rejectUnauthorized: false
     }
