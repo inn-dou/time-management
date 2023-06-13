@@ -31,8 +31,28 @@ app.use(
     })
   );
 
+const sessionStore = new MySQLStore({
+    expiration: 86400000, // セッションの有効期限（ミリ秒単位）
+    createDatabaseTable: true, // セッションテーブルを自動作成するかどうか
+    schema: {
+      tableName: 'sessions', // セッションテーブルの名前
+      columnNames: {
+        session_id: 'session_id',
+        expires: 'expires',
+        data: 'data'
+      }
+    }
+}, connection);
 
-
+app.use((req, res, next) => {
+    session({
+      secret: 'bnaafgnib42', // セッションを署名するための秘密キー
+      resave: false,
+      saveUninitialized: false,
+      store: sessionStore
+    })(req, res, next);
+  });
+  
 
 app.use((req,res,next)=>{
     if(req.session.userId===undefined){
