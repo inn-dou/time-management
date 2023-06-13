@@ -19,12 +19,7 @@ const connection = mysql.createConnection({
     ssl:{
         rejectUnauthorized: false
     }
-  });
-
-
-
-  
-
+});
 
 
 app.use(express.static('public'));
@@ -38,6 +33,8 @@ app.use(
     })
   );
 
+// セッションの設定
+const sessionStore = new MySQLStore({}, connection); // セッションストアを作成
 
 
 app.use((req,res,next)=>{
