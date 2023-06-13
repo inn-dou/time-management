@@ -19,6 +19,16 @@ require('dotenv').config();
 //    }
 //  });
 
+// セッションの設定
+app.use(
+    session({
+      secret: 'secret-key',
+      resave: false,
+      saveUninitialized: true,
+    })
+  );
+  
+
   const connectionConfig = {
     host: process.env.DB_HOSTNAME,
     port: process.env.DB_PORT,
