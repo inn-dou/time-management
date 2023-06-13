@@ -2,6 +2,8 @@ const express = require('express');
 const mysql = require('mysql');
 const app = express();
 const session = require('express-session');
+//For save login info
+const MySQLStore = require('connect-mysql')(session);
 const bcrypt = require('bcrypt');
 const path = require('path');
 // .envから環境変数取り込み
@@ -18,15 +20,6 @@ require('dotenv').config();
 //        rejectUnauthorized: false
 //    }
 //  });
-
-// セッションの設定
-app.use(
-    session({
-      secret: 'secret-key',
-      resave: false,
-      saveUninitialized: true,
-    })
-  );
   
 
   const connectionConfig = {
@@ -86,17 +79,15 @@ app.use(
 
     app.use(express.static('public'));
     app.use(express.urlencoded({extended: false}));
-    app.use(
-        session({
-        secret: 'bnaafgnib42',
-        resave: false,
-        saveUninitialized: false,
-        })
-    );
-
 
 
     app.use((req,res,next)=>{
+        session({
+            secret: 'bnaafgnib42',
+            resave: false,
+            saveUninitialized: false,
+            store: new MySQLStore(connectionConfig),
+        })
         if(req.session.userId===undefined){
             console.log('ログインしていません');
             res.locals.userName='ゲスト';
