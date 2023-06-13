@@ -2,8 +2,6 @@ const express = require('express');
 const mysql = require('mysql');
 const app = express();
 const session = require('express-session');
-//For eternal login
-const MySQLStore = require('express-mysql-session')(session);
 const bcrypt = require('bcrypt');
 const path = require('path');
 // .envから環境変数取り込み
@@ -29,12 +27,10 @@ app.use(
       secret: 'bnaafgnib42',
       resave: false,
       saveUninitialized: true,
-      store: new MySQLStore(connectionConfig), // MySQLStoreをセッションストアとして使用する
     })
   );
 
-// セッションの設定
-const sessionStore = new MySQLStore({}, connection); // セッションストアを作成
+
 
 
 app.use((req,res,next)=>{
