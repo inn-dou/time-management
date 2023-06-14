@@ -1,5 +1,5 @@
 const express = require('express'); 
-const mysql = require('mysql');
+const mysql = require('mysql2');
 const app = express();
 const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session); //追加分
