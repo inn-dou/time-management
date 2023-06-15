@@ -2,24 +2,11 @@ const express = require('express');
 const mysql = require('mysql2');
 const app = express();
 const session = require('express-session');
-//const MySQLStore = require('express-mysql-session')(session); //追加分
 const { Pool } = require('pg');
 const bcrypt = require('bcrypt');
 const path = require('path');
 // .envから環境変数取り込み
 require('dotenv').config();
-
-//envファイルよるデータベースの接続
-//const connection = mysql.createConnection({
-//    host: process.env.DB_HOSTNAME,
-//    port: process.env.DB_PORT,
-//    user: process.env.DB_USERNAME,
-//    password: process.env.DB_PASSWORD,
-//    database: process.env.DB_NAME,
-//    ssl:{
-//        rejectUnauthorized: false
-//    }
-//});
 
 const pool = mysql.createPool({
     connectionLimit: 10,
@@ -50,19 +37,6 @@ app.use(
       saveUninitialized: true,
     })
   );
-
-// セッションストアの設定
-//const sessionStore = new MySQLStore(connection);
-
-// セッションの設定
-//app.use(
-//    session({
-//      secret: 'bnaafgnib42', // セッションを署名するための秘密キー
-//      resave: false,
-//      saveUninitialized: false,
-//      store: sessionStore,
-//    })
-//  );
   
 
 app.use((req,res,next)=>{
@@ -348,10 +322,15 @@ app.post('/work-update/:history_id',(req,res)=>{
                             [userId],
                             (error,userResults)=>{
                                 //Point function
-                                const point = Math.floor(userResults[0].point/1000) * 10;
-                                const unit_price = point + userResults[0].unit_price;
+                                
+                                //本日のポイント
                                 const today_point = timeArray[0]+timeArray[1];
+                                //変更によるポイントの差分を総ポイント数に反映
                                 const sum_point = userResults[0].point + today_point - oldPoint;
+                                //現在の追加されている時給　十円単位
+                                const point = Math.floor(sum_point/1000) * 10;
+                                //追加時給＋元々の時給
+                                const unit_price = point + userResults[0].unit_price;
                                 const sales = (unit_price * timeArray[1]) + ((unit_price * 1.25) * timeArray[0]);
                                 connection.query(
                                     'UPDATE work_history SET sales=?, daytime=?, night=?, point=? WHERE history_id=?',
@@ -532,6 +511,7 @@ app.post('/Out_time/:id',(req,res)=>{
                                 const point = Math.floor(results[0].point/1000) * 10;
                                 const unit_price = point + results[0].unit_price;
                                 const today_point = timeArray[0]+timeArray[1];
+                                //もし本日追加されたポイントによる時給アップは次回以降有効
                                 const sum_point = results[0].point + today_point;
                                 const sales = (unit_price * timeArray[1]) + ((unit_price * 1.25) * timeArray[0]);
                                 connection.query(
